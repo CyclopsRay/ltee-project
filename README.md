@@ -45,6 +45,15 @@ from the Long-Term Evolution Experiment (population Ara-3, generations 5,000,
 Reference genome: *E. coli* B str. REL606, GenBank CP000819.1 (NCBI).
 Details, sample sheet and checksums are in `metadata/`.
 
+## Data availability
+
+Raw reads are in NCBI BioProject PRJNA295606 (runs SRR2589044, SRR2584863
+and SRR2584866). The subset used here is available from figshare,
+<https://doi.org/10.6084/m9.figshare.7726454> (CC0). The reference genome is
+*E. coli* B str. REL606, GenBank CP000819.1 (NCBI). This repository's code
+and pinned Pixi environment are MIT licensed; derived data are regenerated
+from the recorded sources with the project workflow.
+
 ## How to cite
 
 See `CITATION.cff`. GitHub shows a "Cite this repository" button for it.
