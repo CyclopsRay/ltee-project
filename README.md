@@ -2,7 +2,7 @@
 
 Variant calling on three E. coli samples from the Long-Term Evolution Experiment
 
-Author: Cyclops Ray
+Author: Yuqi Lei (<Yuqi.lei@mbzuai.ac.ae>)
 
 ## Reproduce the results
 
@@ -56,11 +56,15 @@ from the recorded sources with the project workflow.
 
 ## How to cite
 
-See `CITATION.cff`. GitHub shows a "Cite this repository" button for it.
+See `CITATION.cff` (author: Yuqi Lei). GitHub shows a "Cite this repository"
+button for it, with the citation in APA and BibTeX formats.
 
 ## License
 
-MIT, see `LICENSE`.
+Copyright © 2026 Yuqi Lei.
+
+The code is released under the MIT License, see `LICENSE`. The raw data keep
+their own license (CC0, from figshare; see Data).
 
 ---
 Project layout generated from the CBIO7501 project template
