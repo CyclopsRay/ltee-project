@@ -25,6 +25,11 @@ jobs:
           pixi-version: v0.83.0
           locked: true   # fail if pixi.lock does not match pixi.toml
 
+      # A typo in CITATION.cff silently removes GitHub's "Cite this repository"
+      # button (lesson 11), so check it on every push.
+      - name: Citation file is valid
+        run: pixi exec cffconvert --validate -i CITATION.cff
+
       - name: Rebuild every result from raw data
         run: pixi run reproduce
 
