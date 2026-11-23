@@ -71,3 +71,26 @@ Practice project from the Reproducible and Open Science lessons.
 ## Get the data
 
     pixi exec python scripts/download_data.py
+
+## Container
+
+The pipeline's software also runs in a Docker image built from `pixi.lock`
+(`containers/Dockerfile`), so a container and a laptop run exactly the same
+packages. Build it from this folder:
+
+```bash
+docker build --platform linux/amd64 -f containers/Dockerfile \
+  --build-arg ENV_NAME=pipeline -t ltee-project:0.1.0 .
+```
+
+Run the pipeline in it, with the project mounted at `/work`:
+
+```bash
+docker run --rm -v "$PWD":/work -w /work ltee-project:0.1.0 \
+  bash scripts/run_variant_calling.sh
+```
+
+On every push, GitHub builds this image, runs the variant calling in it and
+checks that it gives the same counts as a laptop (10, 25 and 775 variants):
+`.github/workflows/container.yml`. The summary of each Container run gives
+the image ID, which identifies the exact image behind that run's results.
