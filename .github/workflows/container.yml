@@ -1,0 +1,54 @@
+# Build the pipeline's container image from pixi.lock and run the variant
+# calling inside it, on a fresh Linux machine (lesson 08). Does the container
+# give the same variant calls as the laptop (10, 25 and 775)?
+#
+# The image is built for linux/amd64, the Linux platform pixi.lock has
+# packages for. GitHub's machines are amd64, so no emulation is needed here.
+name: Container
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Fresh clone
+        uses: actions/checkout@v7
+
+      - name: Build the image from pixi.lock
+        run: |
+          docker build --platform linux/amd64 -f containers/Dockerfile \
+            --build-arg ENV_NAME=pipeline -t ltee-project:0.1.0 .
+          docker images ltee-project
+          id=$(docker image inspect ltee-project:0.1.0 --format '{{.Id}}')
+          echo "Image ID (provenance): $id"
+          echo "Image \`ltee-project:0.1.0\`, ID \`$id\`" >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Tools in the image come from pixi.lock
+        run: |
+          docker run --rm ltee-project:0.1.0 samtools --version | head -1
+          docker run --rm ltee-project:0.1.0 bcftools --version | head -1
+          docker run --rm ltee-project:0.1.0 fastqc --version
+
+      # --user: files the container writes in the mounted project belong to
+      # the runner's user, not to root (lesson 08, "File ownership on Linux").
+      - name: Download the data, inside the container
+        run: >
+          docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/work -w /work
+          ltee-project:0.1.0 python scripts/download_data.py
+
+      - name: Run the variant calling, inside the container
+        run: >
+          docker run --rm --user "$(id -u):$(id -g)" -v "$PWD":/work -w /work
+          ltee-project:0.1.0 bash scripts/run_variant_calling.sh
+
+      - name: Same variant counts as on the laptop
+        run: |
+          for f in results/vcf/*_final_variants.vcf; do echo "$f $(grep -vc '^#' "$f")"; done | tee -a "$GITHUB_STEP_SUMMARY"
+          test "$(grep -vc '^#' results/vcf/SRR2589044_final_variants.vcf)" -eq 10
+          test "$(grep -vc '^#' results/vcf/SRR2584863_final_variants.vcf)" -eq 25
+          test "$(grep -vc '^#' results/vcf/SRR2584866_final_variants.vcf)" -eq 775
