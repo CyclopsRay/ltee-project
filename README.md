@@ -1,6 +1,8 @@
 # LTEE variant calling
 
-Variant calling on three E. coli samples from the Long-Term Evolution Experiment
+Built as the example project of the Reproducible and Open Science lessons.
+The analysis steps follow the Data Carpentry lesson *Wrangling
+Genomics* (CC BY 4.0).
 
 Author: Yuqi Lei
 
